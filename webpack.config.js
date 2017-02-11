@@ -3,33 +3,54 @@ const autoprefixer      = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path              = require('path');
 
+const styleLoaders = [];
+
+if (process.env.NODE_ENV === 'development') {
+    styleLoaders.push('style-loader');
+}
+
+styleLoaders.push({
+    loader: 'css-loader',
+    options: {
+        modules: true,
+        importLoaders: true,
+        localIdentName:
+            (process.env.NODE_ENV === 'development') ?
+                '[name]__[local]___[hash:base64:5]' :
+                undefined,
+    },
+});
+styleLoaders.push('less-loader');
+styleLoaders.push('postcss-loader');
+
 module.exports = {
-    entry: './src/js/app.js',
+    entry: (() => {
+        const entries = ['./src/js/app.js'];
+
+        if (process.env.NODE_ENV === 'development') {
+            entries.push('webpack/hot/only-dev-server');
+        }
+
+        return entries;
+    })(),
+
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'app.js',
     },
+
     module: {
         rules: [
             {
                 test: /\.(css|less)$/,
-                loader: ExtractTextPlugin.extract({
-                    loader: [
-                        {
-                            loader: 'css-loader',
-                            options: {
-                                modules: true,
-                                importLoaders: true,
-                                localIdentName:
-                                    (process.env.NODE_ENV === 'development') ?
-                                        '[name]__[local]___[hash:base64:5]' :
-                                        undefined,
-                            },
-                        },
-                        'less-loader',
-                        'postcss-loader',
-                    ],
-                }),
+                use: ((process.env.NODE_ENV === 'development') ?
+                    styleLoaders
+                    :
+                    ExtractTextPlugin.extract({
+                        fallback: 'style-loader',
+                        use: styleLoaders,
+                    })
+                ),
             },
             {
                 test: /\.(jpg|gif|png|webp|ttf|eot|svg|woff(2)?)$/,
@@ -40,7 +61,6 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                // loader: 'babel',
                 use: [
                     {
                         loader: 'babel-loader',
@@ -52,7 +72,9 @@ module.exports = {
             },
         ],
     },
+
     devtool: (process.env.NODE_ENV === 'development') ? 'eval-source-map' : undefined,
+
     plugins: [
         new ExtractTextPlugin({
             filename: 'app.css',
@@ -70,16 +92,18 @@ module.exports = {
             },
         }),
     ],
+
     resolve: {
         modules: [
             path.join(__dirname, 'src/js'),
             'node_modules',
         ],
     },
+
     // exclude and load from cdnjs
     externals: {
         // jquery: 'jQuery',
         // react: 'React',
-        // 'react-dom': 'ReactDOM'
+        // 'react-dom': 'ReactDOM',
     },
 };
