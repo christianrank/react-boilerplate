@@ -1871,9 +1871,9 @@ eslint-config-airbnb@^14.1.0:
   dependencies:
     eslint-config-airbnb-base "^11.1.0"
 
-eslint-config-christianrank@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/eslint-config-christianrank/-/eslint-config-christianrank-1.0.5.tgz#b214032026c354ae6d6327a4ae8e36cfd02d06cd"
+eslint-config-christianrank@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/eslint-config-christianrank/-/eslint-config-christianrank-1.0.6.tgz#417290eeefcb8610d365af030e9459caca2e39be"
 
 eslint-import-resolver-node@^0.2.0:
   version "0.2.3"
@@ -3301,9 +3301,9 @@ object-assign@^4.0.1, object-assign@^4.1.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
-object-fill@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/object-fill/-/object-fill-1.0.0.tgz#4c0236599e39b860c724b253fe91a710752b41e4"
+object-fill@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/object-fill/-/object-fill-1.0.1.tgz#9ea1498b1c9332953469d2ec1771ccfef973458a"
 
 object-keys@^1.0.8:
   version "1.0.11"
