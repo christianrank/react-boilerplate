@@ -15,6 +15,7 @@ class Navigation extends React.Component {
         return (
             <nav styleName="Navigation">
                 <Button to="/">Home</Button>
+                <Button to="/sample">Sample</Button>
             </nav>
         );
     }
