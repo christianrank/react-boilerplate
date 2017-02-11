@@ -20,7 +20,10 @@ module.exports = {
                             options: {
                                 modules: true,
                                 importLoaders: true,
-                                localIdentName: '[name]__[local]___[hash:base64:5]',
+                                localIdentName:
+                                    (process.env.NODE_ENV === 'development') ?
+                                        '[name]__[local]___[hash:base64:5]' :
+                                        undefined,
                             },
                         },
                         'less-loader',
@@ -49,7 +52,7 @@ module.exports = {
             },
         ],
     },
-    devtool: 'eval-source-map',
+    devtool: (process.env.NODE_ENV === 'development') ? 'eval-source-map' : undefined,
     plugins: [
         new ExtractTextPlugin({
             filename: 'app.css',
