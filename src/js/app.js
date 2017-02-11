@@ -10,11 +10,6 @@ import Routes                           from './routes/';
 
 // import Store                            from './plugins/store';
 
-
-const api = config.api;
-
-window.api = api.proto + '://' + api.host + ':' + api.port;
-
 // Render
 ReactDOM.render(
     /*<Provider store={Store}>*/
