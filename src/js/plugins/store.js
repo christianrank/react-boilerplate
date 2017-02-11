@@ -37,7 +37,7 @@ const enhancer = compose(
 );
 
 export default createStore(
-    rootReducer,
+    // rootReducer, // todo: with this line there's an error, can i remove this?
     reducer,
     enhancer,
 );
