@@ -2,7 +2,7 @@ import React            from 'react';
 // import { injectIntl, FormattedHTMLMessage } from 'react-intl';
 import CSSModules       from 'react-css-modules';
 
-import styles           from './styles.less';
+import styles           from './styles.scss';
 
 import Navigation       from './Navigation';
 

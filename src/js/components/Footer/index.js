@@ -1,7 +1,7 @@
 import React            from 'react';
 import CSSModules       from 'react-css-modules';
 
-import styles           from './styles.less';
+import styles           from './styles.scss';
 
 
 class Footer extends React.Component {

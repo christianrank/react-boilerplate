@@ -20,7 +20,7 @@ styleLoaders.push({
                 undefined,
     },
 });
-styleLoaders.push('less-loader');
+styleLoaders.push('sass-loader');
 styleLoaders.push('postcss-loader');
 
 module.exports = {
@@ -42,7 +42,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(css|less)$/,
+                test: /\.(css|scss)$/,
                 use: ((process.env.NODE_ENV === 'development') ?
                     styleLoaders
                     :
