@@ -4,7 +4,7 @@ import CSSModules   from 'react-css-modules';
 import Header       from 'components/Header';
 import Footer       from 'components/Footer';
 
-import styles       from './styles.less';
+import styles       from './styles.scss';
 
 
 // App

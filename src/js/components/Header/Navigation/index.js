@@ -3,7 +3,7 @@ import CSSModules           from 'react-css-modules';
 
 import Button               from 'snippets/Button';
 
-import styles               from './styles.less';
+import styles               from './styles.scss';
 
 
 class Navigation extends React.Component {
