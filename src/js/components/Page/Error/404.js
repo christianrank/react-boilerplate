@@ -1,4 +1,5 @@
-import React from 'react';
+import React    from 'react';
+import Helmet   from 'react-helmet';
 
 
 class error404 extends React.Component {
@@ -8,7 +9,11 @@ class error404 extends React.Component {
 
     render() {
         return (
-            <div>404 - Not Found. ¯\_(ツ)_/¯</div>
+            <div>
+                <Helmet title="Error 404" />
+                <h1>Error 404</h1>
+                <p>Not Found. ¯\_(ツ)_/¯</p>
+            </div>
         );
     }
 }
