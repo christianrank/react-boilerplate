@@ -1,6 +1,8 @@
 *~
+._*
 .DS_Store
 .idea
 node_modules
 src/messages
-dist/index.html
+src/video
+dist/*

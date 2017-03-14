@@ -1,27 +1,38 @@
 const webpack           = require('webpack');
+const path              = require('path');
 const autoprefixer      = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const path              = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const styleLoaders = [];
+const getStyleLoaders = (filetype) => {
+    const styleLoaders = [];
 
-if (process.env.NODE_ENV === 'development') {
-    styleLoaders.push('style-loader');
-}
+    if (process.env.NODE_ENV === 'development') {
+        styleLoaders.push('style-loader');
+    }
 
-styleLoaders.push({
-    loader: 'css-loader',
-    options: {
-        modules: true,
-        importLoaders: true,
-        localIdentName:
-            (process.env.NODE_ENV === 'development') ?
-                '[name]__[local]___[hash:base64:5]' :
-                undefined,
-    },
-});
-styleLoaders.push('sass-loader');
-styleLoaders.push('postcss-loader');
+    styleLoaders.push({
+        loader: 'css-loader',
+        options: {
+            modules: (filetype === 'scss'),
+            importLoaders: true,
+            localIdentName:
+                (process.env.NODE_ENV === 'development') ?
+                    '[name]__[local]___[hash:base64:5]' :
+                    undefined,
+        },
+    });
+    styleLoaders.push('resolve-url-loader');
+    styleLoaders.push({
+        loader: 'sass-loader',
+        options: {
+            sourceMap: true,
+        },
+    });
+    styleLoaders.push('postcss-loader');
+
+    return styleLoaders;
+};
 
 module.exports = {
     entry: (() => {
@@ -37,23 +48,35 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'app.js',
+        publicPath: '/',
     },
 
     module: {
         rules: [
             {
-                test: /\.(css|scss)$/,
+                test: /\.(css)$/,
                 use: ((process.env.NODE_ENV === 'development') ?
-                    styleLoaders
+                    getStyleLoaders('css')
                     :
                     ExtractTextPlugin.extract({
                         fallback: 'style-loader',
-                        use: styleLoaders,
+                        use: getStyleLoaders('css'),
                     })
                 ),
             },
             {
-                test: /\.(jpg|gif|png|webp|ttf|eot|svg|woff(2)?)$/,
+                test: /\.(scss)$/,
+                use: ((process.env.NODE_ENV === 'development') ?
+                    getStyleLoaders('scss')
+                    :
+                    ExtractTextPlugin.extract({
+                        fallback: 'style-loader',
+                        use: getStyleLoaders('scss'),
+                    })
+                ),
+            },
+            {
+                test: /\.(jpg|gif|png|ico|webp|ttf|eot|svg|woff(2)?|mp4|webm|ogv)$/,
                 use: [
                     'file-loader',
                 ],
@@ -76,34 +99,47 @@ module.exports = {
     devtool: (process.env.NODE_ENV === 'development') ? 'eval-source-map' : undefined,
 
     plugins: [
-        new ExtractTextPlugin({
-            filename: 'app.css',
-            allChunks: true,
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+                API: JSON.stringify(process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : (process.env.API || '/api')),
+            },
         }),
         new webpack.LoaderOptionsPlugin({
             options: {
                 postcss: [autoprefixer],
             },
         }),
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
-                API: JSON.stringify(process.env.API || 'http://localhost:3000'),
+        new ExtractTextPlugin({
+            filename: 'app.css',
+            allChunks: true,
+        }),
+        new HtmlWebpackPlugin({
+            template: 'src/index.html',
+            minify: (process.env.NODE_ENV === 'development') ? false : {
+                collapseWhitespace: true,
+                removeComments: true,
+                removeRedundantAttributes: true,
+                removeScriptTypeAttributes: true,
+                removeStyleLinkTypeAttributes: true,
             },
+            hash: true,
         }),
     ],
 
     resolve: {
         modules: [
             path.join(__dirname, 'src/js'),
+            path.join(__dirname, 'src'),
             'node_modules',
         ],
     },
 
     // exclude and load from cdnjs
-    externals: {
+    externals: [
         // jquery: 'jQuery',
         // react: 'React',
         // 'react-dom': 'ReactDOM',
-    },
+        // CdnWebpackPlugin.externals,
+    ],
 };

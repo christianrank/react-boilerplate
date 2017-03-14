@@ -1,5 +1,6 @@
 import React        from 'react';
 // import { Link }     from 'react-router';
+import Helmet       from 'react-helmet';
 import CSSModules   from 'react-css-modules';
 
 import styles       from './styles.scss';
@@ -13,6 +14,7 @@ class Sample extends React.Component {
     render() {
         return (
             <div styleName="Sample">
+                <Helmet title="Sample" />
                 Sample Page
             </div>
         );
