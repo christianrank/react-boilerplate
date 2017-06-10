@@ -1,5 +1,5 @@
 import React        from 'react';
-import { Link }     from 'react-router';
+import { NavLink }  from 'react-router-dom';
 import CSSModules   from 'react-css-modules';
 
 import styles       from './styles.scss';
@@ -12,15 +12,16 @@ class Button extends React.Component {
 
         if (this.props.to) {
             return (
-                <Link
+                <NavLink
                     className={this.props.className}
                     styleName={styleName + ' ' + (this.props.noDefaultStyle ? '' : 'DefaultStyle')}
                     to={this.props.to}
                     activeClassName={this.props.activeClassName}
-                    onlyActiveOnIndex={this.props.onlyActiveOnIndex}
+                    // exact was previously called "onlyActiveOnIndex"
+                    exact={this.props.exact}
                 >
                     {this.props.children}
-                </Link>
+                </NavLink>
             );
         } else if (this.props.href) {
             return (

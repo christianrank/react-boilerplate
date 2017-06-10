@@ -3,7 +3,7 @@ import persistState, { mergePersistedState }            from 'redux-localstorage
 import adapter                                          from 'redux-localstorage/lib/adapters/localStorage';
 import filter                                           from 'redux-localstorage-filter';
 import thunkMiddleware                                  from 'redux-thunk';
-import createLogger                                     from 'redux-logger';
+import { createLogger }                                 from 'redux-logger';
 
 import objectFill                                       from 'object-fill';
 
