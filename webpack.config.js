@@ -1,145 +1,167 @@
-const webpack           = require('webpack');
-const path              = require('path');
-const autoprefixer      = require('autoprefixer');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack')
+const path = require('path')
+const autoprefixer = require('autoprefixer')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+
+const API_HOST_DEVELOPMENT = 'http://localhost:3000'
+const API_HOST_STAGING = '/api'
+const API_HOST_PRODUCTION = '/api'
 
 const getStyleLoaders = (filetype) => {
-    const styleLoaders = [];
+  const styleLoaders = []
 
-    if (process.env.NODE_ENV === 'development') {
-        styleLoaders.push('style-loader');
-    }
+  styleLoaders.push('style-loader')
 
+  styleLoaders.push({
+    loader: 'css-loader',
+    options: {
+      modules: (filetype === 'less'),
+      localIdentName: (process.env.NODE_ENV === 'development') ? '[name]__[local]___[hash:base64:5]' : undefined,
+    },
+  })
+
+  styleLoaders.push('resolve-url-loader')
+
+  if (filetype === 'less') {
     styleLoaders.push({
-        loader: 'css-loader',
-        options: {
-            modules: (filetype === 'scss'),
-            importLoaders: true,
-            localIdentName:
-                (process.env.NODE_ENV === 'development') ?
-                    '[name]__[local]___[hash:base64:5]' :
-                    undefined,
-        },
-    });
-    styleLoaders.push('resolve-url-loader');
-    styleLoaders.push({
-        loader: 'sass-loader',
-        options: {
-            sourceMap: true,
-        },
-    });
-    styleLoaders.push('postcss-loader');
+      loader: 'less-loader',
+      options: {
+        sourceMap: true,
+        javascriptEnabled: true,
+        paths: [
+          path.resolve(__dirname, './src/js/components'),
+        ],
+      },
+    })
+  }
 
-    return styleLoaders;
-};
+  return styleLoaders
+}
 
 module.exports = {
-    entry: (() => {
-        const entries = ['./src/js/app.js'];
+  entry: [
+    'babel-polyfill',
+    './src/js/app.jsx',
+  ],
 
-        if (process.env.NODE_ENV === 'development') {
-            entries.push('webpack/hot/only-dev-server');
-        }
+  output: {
+    path: path.join(__dirname, 'dist'),
+    filename: (process.env.NODE_ENV === 'development') ? '[name].js' : '[name].[chunkhash].js',
+    publicPath: '/',
+  },
 
-        return entries;
-    })(),
-
-    output: {
-        path: path.join(__dirname, 'dist'),
-        filename: 'app.js',
-        publicPath: '/',
-    },
-
-    module: {
-        rules: [
-            {
-                test: /\.(css)$/,
-                use: ((process.env.NODE_ENV === 'development') ?
-                    getStyleLoaders('css')
-                    :
-                    ExtractTextPlugin.extract({
-                        fallback: 'style-loader',
-                        use: getStyleLoaders('css'),
-                    })
-                ),
-            },
-            {
-                test: /\.(scss)$/,
-                use: ((process.env.NODE_ENV === 'development') ?
-                    getStyleLoaders('scss')
-                    :
-                    ExtractTextPlugin.extract({
-                        fallback: 'style-loader',
-                        use: getStyleLoaders('scss'),
-                    })
-                ),
-            },
-            {
-                test: /\.(jpg|gif|png|ico|webp|ttf|eot|svg|woff(2)?|mp4|webm|ogv)$/,
-                use: [
-                    'file-loader',
-                ],
-            },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['es2015', 'stage-0', 'react'],
-                        },
-                    },
-                ],
-            },
+  module: {
+    rules: [
+      {
+        test: /\.(css)$/,
+        use: getStyleLoaders('css'),
+      },
+      {
+        test: /\.(less)$/,
+        use: getStyleLoaders('less'),
+      },
+      {
+        test: /\.(svg|jpg|gif|png|ico|webp|ttf|eot|woff(2)?|mp4|webm|ogv)$/,
+        use: [
+          'file-loader',
         ],
-    },
-
-    devtool: (process.env.NODE_ENV === 'development') ? 'eval-source-map' : undefined,
-
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
-                API: JSON.stringify(process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : (process.env.API || '/api')),
-            },
-        }),
-        new webpack.LoaderOptionsPlugin({
+      },
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
             options: {
-                postcss: [autoprefixer],
+              presets: ['es2015', 'stage-0', 'react'],
+              plugins: [['import', {
+                libraryName: 'antd',
+              }]],
             },
-        }),
-        new ExtractTextPlugin({
-            filename: 'app.css',
-            allChunks: true,
-        }),
-        new HtmlWebpackPlugin({
-            template: 'src/index.html',
-            minify: (process.env.NODE_ENV === 'development') ? false : {
-                collapseWhitespace: true,
-                removeComments: true,
-                removeRedundantAttributes: true,
-                removeScriptTypeAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-            },
-            hash: true,
-        }),
-    ],
-
-    resolve: {
-        modules: [
-            path.join(__dirname, 'src/js'),
-            path.join(__dirname, 'src'),
-            'node_modules',
+          },
         ],
-    },
-
-    // exclude and load from cdnjs
-    externals: [
-        // jquery: 'jQuery',
-        // react: 'React',
-        // 'react-dom': 'ReactDOM',
-        // CdnWebpackPlugin.externals,
+      },
     ],
-};
+  },
+
+  devtool: (process.env.NODE_ENV === 'development') ? 'cheap-module-eval-source-map' : undefined,
+
+  plugins: (() => {
+    const plugins = []
+
+    let apiHost = API_HOST_PRODUCTION
+
+    if (process.env.API_ENV) {
+      switch (process.env.API_ENV) {
+        case 'development':
+          apiHost = API_HOST_DEVELOPMENT
+          break
+        case 'staging':
+          apiHost = API_HOST_STAGING
+          break
+        default:
+          break
+      }
+    }
+
+    plugins.push(
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'production'),
+          API: JSON.stringify(apiHost),
+        },
+      }),
+      new webpack.LoaderOptionsPlugin({
+        options: {
+          postcss: [autoprefixer],
+        },
+      }),
+      new HtmlWebpackPlugin({
+        template: 'src/index.html',
+        minify: (process.env.NODE_ENV === 'development') ? false : {
+          collapseWhitespace: true,
+          removeComments: true,
+          removeRedundantAttributes: true,
+          removeScriptTypeAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+        },
+      }),
+    )
+
+    if (process.env.WEBPACK_ANALYZE) {
+      plugins.push(new BundleAnalyzerPlugin())
+    }
+
+    plugins.push(new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: (module, count) => (module.context && module.context.indexOf('node_modules') >= 0),
+    }))
+
+    plugins.push(new webpack.optimize.CommonsChunkPlugin({
+      async: true,
+      minChunks: 2,
+    }))
+
+    if (process.env.NODE_ENV !== 'development') {
+      plugins.push(new UglifyJSPlugin())
+    }
+
+    return plugins
+  })(),
+
+  resolve: {
+    modules: [
+      path.join(__dirname, 'src/js'),
+      path.join(__dirname, 'src'),
+      'node_modules',
+    ],
+    extensions: ['.js', '.jsx'],
+  },
+
+  devServer: {
+    compress: true,
+    disableHostCheck: true,
+  },
+}
