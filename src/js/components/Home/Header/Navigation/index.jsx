@@ -8,13 +8,7 @@ import styles from './styles.less'
 
 
 class Navigation extends React.PureComponent {
-  constructor(props) {
-    super(props)
-
-    this.navigateTo = this.navigateTo.bind(this)
-  }
-
-  navigateTo(path) {
+  navigateTo = (path) => {
     this.props.history.push(path)
   }
 

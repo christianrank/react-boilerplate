@@ -16,5 +16,4 @@ class App extends React.Component {
   }
 }
 
-
 export default CSSModules(App, styles, { allowMultiple: true })
