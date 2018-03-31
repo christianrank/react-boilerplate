@@ -4,14 +4,14 @@ import CSSModules from 'react-css-modules'
 import styles from './styles.less'
 
 
-class Home extends React.Component {
+class Index extends React.Component {
   render() {
     return (
-      <div styleName="Home">
+      <div styleName="Index">
         Hello World
       </div>
     )
   }
 }
 
-export default CSSModules(Home, styles, { allowMultiple: true })
+export default CSSModules(Index, styles, { allowMultiple: true })
