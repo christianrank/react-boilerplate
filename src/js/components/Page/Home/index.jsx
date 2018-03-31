@@ -1,21 +1,17 @@
-import React        from 'react';
-import CSSModules   from 'react-css-modules';
+import React from 'react'
+import CSSModules from 'react-css-modules'
 
-import styles       from './styles.scss';
+import styles from './styles.scss'
 
 
 class Home extends React.Component {
-    constructor(props, context) {
-        super(props, context);
-    }
-
-    render() {
-        return (
-            <div styleName="Home">
+  render() {
+    return (
+      <div styleName="Home">
                 Hello World
-            </div>
-        );
-    }
+      </div>
+    )
+  }
 }
 
-export default CSSModules(Home, styles, { allowMultiple: true });
+export default CSSModules(Home, styles, { allowMultiple: true })

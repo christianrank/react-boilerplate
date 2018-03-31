@@ -1,13 +1,13 @@
-import { combineReducers }      from 'redux';
+import { combineReducers } from 'redux'
 
 
 const reducer = combineReducers({
-    function(state = {}, action) {
-        switch (action.type) {
-            default:
-                return state;
-        }
-    },
-});
+  function(state = {}, action) {
+    switch (action.type) {
+      default:
+        return state
+    }
+  },
+})
 
-export default reducer;
+export default reducer
