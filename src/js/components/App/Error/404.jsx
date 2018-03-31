@@ -2,7 +2,7 @@ import React from 'react'
 import Helmet from 'react-helmet'
 
 
-class error404 extends React.Component {
+class Error404 extends React.Component {
   render() {
     return (
       <div>
@@ -14,4 +14,4 @@ class error404 extends React.Component {
   }
 }
 
-export default error404
+export default Error404
