@@ -1,31 +1,29 @@
 import React from 'react'
 import CSSModules from 'react-css-modules'
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 
-import { Menu } from 'antd'
+import { Button } from 'antd'
 
 import styles from './styles.less'
 
 
-class Navigation extends React.Component {
-  render() {
-    const {
-      history,
-    } = this.props
+class Navigation extends React.PureComponent {
+  constructor(props) {
+    super(props)
 
+    this.navigateTo = this.navigateTo.bind(this)
+  }
+
+  navigateTo(path) {
+    this.props.history.push(path)
+  }
+
+  render() {
     return (
-      <Menu
-        mode="horizontal"
-        selectedKeys={[history.location.pathname]}
-        onClick={({ item, key, keyPath }) => { this.navigateTo(key) }}
-      >
-        <Menu.Item key="/">
-          Home
-        </Menu.Item>
-        <Menu.Item key="/sample">
-          Sample
-        </Menu.Item>
-      </Menu>
+      <nav styleName="Navigation">
+        <Button ghost className={styles.Button} onClick={() => { this.navigateTo('/') }}>Home</Button>
+        <Button ghost className={styles.Button} onClick={() => { this.navigateTo('/sample') }}>Sample</Button>
+      </nav>
     )
   }
 }
