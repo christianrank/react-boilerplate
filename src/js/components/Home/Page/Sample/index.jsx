@@ -2,7 +2,7 @@ import React from 'react'
 import Helmet from 'react-helmet'
 import CSSModules from 'react-css-modules'
 
-import styles from './styles.scss'
+import styles from './styles.less'
 
 
 class Sample extends React.Component {

@@ -14,30 +14,26 @@ const logger = createLogger()
 
 const reducer = compose(
   mergePersistedState((initialState, persistedState) => {
-    // console.log('initialState', initialState);
-    // console.log('persistedState', persistedState);
     const newState = objectFill(initialState, persistedState)
-    // console.log('newState', newState);
     return newState
   }),
 )(rootReducer)
 
 const storage = compose(
   filter([
-    'account',
+    // 'account',
   ]),
 )(adapter(window.localStorage))
 
 const enhancer = compose(
   applyMiddleware(
-    thunkMiddleware, // lets us dispatch() functions
+    thunkMiddleware,
     logger,
   ),
   persistState(storage, 'redux'),
 )
 
 export default createStore(
-  // rootReducer, // todo: with this line there's an error, can i remove this?
   reducer,
   enhancer,
 )

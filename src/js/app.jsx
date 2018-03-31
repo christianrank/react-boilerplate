@@ -3,22 +3,21 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import Helmet from 'react-helmet'
 
-import 'normalize.css/normalize.css'
-
-import Routes from './routes/'
-
 import Store from './plugins/store'
+
+import App from './components/App'
+import Routes from './routes'
 
 // Render
 ReactDOM.render(
   <Provider store={Store}>
-    <div>
+    <App>
       <Helmet
         defaultTitle="PROJECT_NAME"
         titleTemplate="%s | PROJECT_NAME"
       />
       <Routes />
-    </div>
+    </App>
   </Provider>,
   document.getElementById('app'),
 )
