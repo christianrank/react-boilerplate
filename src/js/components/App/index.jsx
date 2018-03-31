@@ -1,5 +1,4 @@
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
 import CSSModules from 'react-css-modules'
 
 import '!style-loader!css-loader!less-loader?javascriptEnabled=true!./antd.less'; // eslint-disable-line

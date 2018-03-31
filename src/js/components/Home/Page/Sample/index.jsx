@@ -10,7 +10,7 @@ class Sample extends React.Component {
     return (
       <div styleName="Sample">
         <Helmet title="Sample" />
-                Sample Page
+        Sample page
       </div>
     )
   }
