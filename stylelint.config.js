@@ -1,15 +1,15 @@
 module.exports = {
-    extends: [
-        'stylelint-config-standard',
-    ],
+  extends: [
+    'stylelint-config-standard',
+  ],
 
-    rules: {
-        indentation: 4,
+  rules: {
+    indentation: 2,
 
-        'shorthand-property-no-redundant-values': null,
+    'shorthand-property-no-redundant-values': null,
 
-        'selector-pseudo-class-no-unknown': [true, {
-            ignorePseudoClasses: ['global', 'local'],
-        }],
-    },
+    'selector-pseudo-class-no-unknown': [true, {
+      ignorePseudoClasses: ['global', 'local'],
+    }],
+  },
 };
