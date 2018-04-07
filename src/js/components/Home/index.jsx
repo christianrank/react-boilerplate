@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import CSSModules from 'react-css-modules'
 import { Helmet } from 'react-helmet'
 
@@ -21,6 +22,10 @@ class Home extends React.Component {
       </div>
     )
   }
+}
+
+Home.propTypes = {
+  children: PropTypes.node.isRequired,
 }
 
 export default CSSModules(Home, styles, { allowMultiple: true })

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import CSSModules from 'react-css-modules'
 
 import '!style-loader!css-loader!less-loader?javascriptEnabled=true!./antd.less'; // eslint-disable-line
@@ -14,6 +15,10 @@ class App extends React.Component {
       </div>
     )
   }
+}
+
+App.propTypes = {
+  children: PropTypes.node.isRequired,
 }
 
 export default CSSModules(App, styles, { allowMultiple: true })

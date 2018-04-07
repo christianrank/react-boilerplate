@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import CSSModules from 'react-css-modules'
 import { withRouter } from 'react-router-dom'
 
@@ -20,6 +21,10 @@ class Navigation extends React.PureComponent {
       </nav>
     )
   }
+}
+
+Navigation.propTypes = {
+  history: PropTypes.object.isRequired,
 }
 
 export default withRouter(CSSModules(Navigation, styles, { allowMultiple: true }))
