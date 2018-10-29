@@ -12,8 +12,8 @@
     "lint:js": "eslint --ext .js --ext .jsx src",
     "lint": "yarn lint:js && yarn lint:css",
     "start": "yarn clean && yarn webpack:dev",
-    "webpack:dev": "NODE_ENV=development API_ENV=development webpack-dev-server --config webpack.config.js --progress --colors --content-base dist/ --hot --inline --history-api-fallback --host 0.0.0.0",
-    "webpack:prod": "webpack --config webpack.config.js"
+    "webpack:dev": "NODE_ENV=development API_ENV=local webpack-dev-server --config webpack.config.js --mode development --progress",
+    "webpack:prod": "webpack --config webpack.config.js --mode production"
   },
   "license": "MIT",
   "dependencies": {
