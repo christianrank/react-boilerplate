@@ -1,18 +1,25 @@
 import React from 'react'
-import { Router, Route, Switch } from 'react-router-dom'
+import Loadable from 'react-loadable'
 
-import history from 'plugins/history'
+import {
+  Router,
+  Route,
+  Switch,
+} from 'react-router-dom'
+
+import { history } from 'plugins/history'
+
+import Spinner from 'components/App/Spinner'
 
 // Sections
 import HomeSection from 'components/Home'
 
 // Section Home
-import HomeIndex from 'components/Home/Page/Index'
-import HomeSample from 'components/Home/Page/Sample'
+const HomeIndex = Loadable({ loader: () => import('components/Home/Page/Index'), loading: () => <Spinner /> })
+const HomeSample = Loadable({ loader: () => import('components/Home/Page/Sample'), loading: () => <Spinner /> })
 
 // Error pages
-import Error404 from 'components/App/Error/404'
-
+const Error404 = Loadable({ loader: () => import('components/App/Error/404'), loading: () => <Spinner /> })
 
 // Routes
 class Routes extends React.Component {
