@@ -28,14 +28,8 @@
     "react-css-modules": "^4.7.7",
     "react-dom": "^16.6.0",
     "react-helmet": "^5.2.0",
-    "react-redux": "^5.1.0",
     "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1",
-    "redux": "^4.0.1",
-    "redux-localstorage": "rc",
-    "redux-localstorage-filter": "^0.1.1",
-    "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0"
+    "react-router-dom": "^4.3.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.0",
