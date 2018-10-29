@@ -1,9 +1,16 @@
-import createHistory from 'history/createBrowserHistory'
+import createBrowserHistory from 'history/createBrowserHistory'
+import { RouterStore, syncHistoryWithStore } from 'mobx-react-router'
 
-const history = createHistory()
+const browserHistory = createBrowserHistory()
+const routerStore = new RouterStore()
 
-history.listen((location, action) => {
+const history = syncHistoryWithStore(browserHistory, routerStore)
+
+browserHistory.listen((location, action) => {
   window.scrollTo(0, 0)
 })
 
-export default history
+export {
+  history,
+  routerStore as RouterStore,
+}
