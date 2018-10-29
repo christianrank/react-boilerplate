@@ -1,37 +1,41 @@
 const webpack = require('webpack')
 const path = require('path')
-const autoprefixer = require('autoprefixer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
-const API_HOST_DEVELOPMENT = 'http://localhost:3000'
-const API_HOST_STAGING = '/api'
+const devMode = (process.env.NODE_ENV === 'development')
+
+const API_HOST_LOCAL = 'http://localhost:5000/PROJECT_NAME/us-central1/api'
+const API_HOST_DEVELOP = 'https://europe-west1-PROJECT_NAME.cloudfunctions.net/api'
+const API_HOST_STAGING = 'https://europe-west1-PROJECT_NAME.cloudfunctions.net/api'
 const API_HOST_PRODUCTION = '/api'
 
-const getStyleLoaders = (filetype) => {
+const getStyleLoaders = (filetype, modules) => {
   const styleLoaders = []
 
-  styleLoaders.push('style-loader')
-
-  styleLoaders.push({
-    loader: 'css-loader',
-    options: {
-      modules: (filetype === 'less'),
-      localIdentName: (process.env.NODE_ENV === 'development') ? '[name]__[local]___[hash:base64:5]' : undefined,
+  styleLoaders.push(
+    devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+    {
+      loader: 'css-loader',
+      options: {
+        modules,
+        localIdentName: devMode ? '[name]__[local]___[hash:base64:5]' : undefined,
+      },
     },
-  })
-
-  styleLoaders.push('resolve-url-loader')
+    'postcss-loader',
+    'resolve-url-loader',
+  )
 
   if (filetype === 'less') {
     styleLoaders.push({
       loader: 'less-loader',
       options: {
-        sourceMap: true,
         javascriptEnabled: true,
         paths: [
-          path.resolve(__dirname, './src/js/components'),
+          path.resolve(__dirname, './src/components'),
         ],
       },
     })
@@ -42,51 +46,73 @@ const getStyleLoaders = (filetype) => {
 
 module.exports = {
   entry: [
-    'babel-polyfill',
-    './src/js/app.jsx',
+    '@babel/polyfill',
+    './src/index.jsx',
   ],
 
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: (process.env.NODE_ENV === 'development') ? '[name].js' : '[name].[chunkhash].js',
+    filename: devMode ? '[name].js' : '[name].[contenthash].js',
     publicPath: '/',
   },
 
   module: {
     rules: [
       {
-        test: /\.(css)$/,
-        use: getStyleLoaders('css'),
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        },
       },
+
       {
-        test: /\.(less)$/,
-        use: getStyleLoaders('less'),
+        test: /\.global\.less$/,
+        use: getStyleLoaders('less', false),
       },
+
       {
-        test: /\.(svg|jpg|gif|png|ico|webp|ttf|eot|woff(2)?|mp4|webm|ogv)$/,
+        test: /^((?!\.global).)*less$/,
+        use: getStyleLoaders('less', true),
+      },
+
+      {
+        test: /\.css$/,
+        use: getStyleLoaders('css', false),
+      },
+
+      {
+        test: /\.svg$/,
+        exclude: /node_modules/,
+        loader: 'svg-react-loader',
+        query: {
+          classIdPrefix: '[name]-[hash:8]__',
+        },
+      },
+
+      {
+        test: /\.(jpg|gif|png|ico|webp|ttf|eot|woff(2)?|mp4|webm|ogv)$/,
         use: [
           'file-loader',
         ],
       },
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['es2015', 'stage-0', 'react'],
-              plugins: [['import', {
-                libraryName: 'antd',
-              }]],
-            },
-          },
-        ],
-      },
     ],
   },
+  resolve: {
+    modules: [
+      'node_modules',
+      path.resolve(__dirname, 'src'),
+    ],
 
-  devtool: (process.env.NODE_ENV === 'development') ? 'cheap-module-eval-source-map' : undefined,
+    extensions: ['.js', '.jsx'],
+  },
+
+  devServer: {
+    hot: true,
+    historyApiFallback: true,
+    compress: true,
+  },
+
+  devtool: devMode ? 'cheap-module-eval-source-map' : false,
 
   plugins: (() => {
     const plugins = []
@@ -95,8 +121,11 @@ module.exports = {
 
     if (process.env.API_ENV) {
       switch (process.env.API_ENV) {
-        case 'development':
-          apiHost = API_HOST_DEVELOPMENT
+        case 'local':
+          apiHost = API_HOST_LOCAL
+          break
+        case 'develop':
+          apiHost = API_HOST_DEVELOP
           break
         case 'staging':
           apiHost = API_HOST_STAGING
@@ -113,14 +142,12 @@ module.exports = {
           API: JSON.stringify(apiHost),
         },
       }),
-      new webpack.LoaderOptionsPlugin({
-        options: {
-          postcss: [autoprefixer],
-        },
-      }),
+
+      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+
       new HtmlWebpackPlugin({
         template: 'src/index.html',
-        minify: (process.env.NODE_ENV === 'development') ? false : {
+        minify: devMode ? false : {
           collapseWhitespace: true,
           removeComments: true,
           removeRedundantAttributes: true,
@@ -128,40 +155,33 @@ module.exports = {
           removeStyleLinkTypeAttributes: true,
         },
       }),
+
+      new MiniCssExtractPlugin({
+        filename: devMode ? '[name].css' : '[name].[contenthash].css',
+      }),
     )
+
+    if (devMode) {
+      plugins.push(new webpack.HotModuleReplacementPlugin())
+    }
 
     if (process.env.WEBPACK_ANALYZE) {
       plugins.push(new BundleAnalyzerPlugin())
     }
 
-    plugins.push(new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: (module, count) => (module.context && module.context.indexOf('node_modules') >= 0),
-    }))
-
-    plugins.push(new webpack.optimize.CommonsChunkPlugin({
-      async: true,
-      minChunks: 2,
-    }))
-
-    if (process.env.NODE_ENV !== 'development') {
-      plugins.push(new UglifyJSPlugin())
-    }
-
     return plugins
   })(),
 
-  resolve: {
-    modules: [
-      path.join(__dirname, 'src/js'),
-      path.join(__dirname, 'src'),
-      'node_modules',
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+      }),
+      new OptimizeCssAssetsPlugin(),
     ],
-    extensions: ['.js', '.jsx'],
-  },
-
-  devServer: {
-    compress: true,
-    disableHostCheck: true,
   },
 }

@@ -1,4 +1,4 @@
-image: node:latest
+image: node:8-alpine
 
 variables:
   PUBLIC_PATH: /srv/www/PROJECT_NAME.tld/
@@ -7,46 +7,18 @@ cache:
   key: "${CI_COMMIT_REF_NAME}"
   paths:
     - node_modules/
-    - dist/
 
 stages:
-  - prepare
   - lint
-  - build
   - deploy
-
-prepare:
-  stage: prepare
-  script:
-    - yarn clean
 
 lint:
   stage: lint
   except:
     - staging
   script:
+    - yarn clean
     - yarn lint
-
-build_develop:
-  stage: build
-  only:
-    - develop
-  script:
-    - API_ENV=staging yarn webpack:prod
-
-build_staging:
-  stage: build
-  only:
-    - staging
-  script:
-    - API_ENV=staging yarn webpack:prod
-
-build_master:
-  stage: build
-  only:
-    - master
-  script:
-    - API_ENV=production yarn webpack:prod
 
 deploy:
   stage: deploy
@@ -55,6 +27,8 @@ deploy:
     - staging
     - master
   script:
+    - yarn clean
+    - API_ENV=${CI_COMMIT_REF_NAME} yarn webpack:prod
     - cp -rp dist ${PUBLIC_PATH}${CI_COMMIT_REF_NAME}_new
     - mv ${PUBLIC_PATH}${CI_COMMIT_REF_NAME} ${PUBLIC_PATH}${CI_COMMIT_REF_NAME}_old
     - mv ${PUBLIC_PATH}${CI_COMMIT_REF_NAME}_new ${PUBLIC_PATH}${CI_COMMIT_REF_NAME}
