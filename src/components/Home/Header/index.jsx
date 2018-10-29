@@ -1,19 +1,17 @@
 import React from 'react'
-import CSSModules from 'react-css-modules'
-
-import styles from './styles.less'
 
 import Navigation from './Navigation'
 
+import styles from './styles.less'
 
 class Header extends React.Component {
   render() {
     return (
-      <header styleName="Header">
+      <header className={styles.header}>
         <Navigation />
       </header>
     )
   }
 }
 
-export default CSSModules(Header, styles, { allowMultiple: true })
+export default Header
