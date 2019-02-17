@@ -1,8 +1,12 @@
+> ## DEPRECATED
+>
+> Not updating this anymore, since I'm using [Next.js](https://nextjs.org/) or [Gatsby](https://www.gatsbyjs.org/) for new stuff.
+
 # react-boilerplate
 
 Just a small repo to start new react projects from.
 
---------------------------------------------------------------------------------
+---
 
 Includes the following:
 
@@ -16,6 +20,6 @@ Includes the following:
 ✅ [React Loadable](https://github.com/jamiebuilds/react-loadable)  
 ✅ [React Hot Loader](https://github.com/gaearon/react-hot-loader)  
 
---------------------------------------------------------------------------------
+---
 
 License: MIT
